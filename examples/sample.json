@@ -1,0 +1,18 @@
+{
+    "through":  2,
+    "characters":  [
+                       {
+                           "facts":  [
+                                         {
+                                             "milestone":  1,
+                                             "text":  "Runs the ferry"
+                                         },
+                                         {
+                                             "milestone":  3,
+                                             "text":  "Knows the hidden route"
+                                         }
+                                     ],
+                           "name":  "Mara"
+                       }
+                   ]
+}
