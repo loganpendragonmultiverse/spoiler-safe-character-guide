@@ -45,5 +45,5 @@ def test_future_names_aliases_facts_and_extension_fields_never_export(tmp_path, 
     ],
 )
 def test_invalid_nested_fields(patch) -> None:
-    with pytest.raises(ValueError):
+    with pytest.raises((ValueError, TypeError)):
         analyze({"through": 2, **patch})

@@ -20,7 +20,7 @@ def _character_guide(data: dict[str, Any]) -> dict[str, Any]:
     characters = []
     raw_characters = data.get("characters", [])
     if not isinstance(raw_characters, list):
-        raise ValueError("characters must be an array")
+        raise TypeError("characters must be an array")
     for index, character in enumerate(raw_characters):
         if (
             not isinstance(character, dict)
@@ -34,12 +34,12 @@ def _character_guide(data: dict[str, Any]) -> dict[str, Any]:
         facts = character.get("facts", [])
         aliases = character.get("aliases", [])
         if not isinstance(facts, list) or not isinstance(aliases, list):
-            raise ValueError(f"characters[{index}].facts and aliases must be arrays")
+            raise TypeError(f"characters[{index}].facts and aliases must be arrays")
         for group, items in (("facts", facts), ("aliases", aliases)):
             for j, item in enumerate(items):
                 key = "text" if group == "facts" else "name"
                 if not isinstance(item, dict) or not isinstance(item.get(key), str):
-                    raise ValueError(f"characters[{index}].{group}[{j}].{key} must be text")
+                    raise TypeError(f"characters[{index}].{group}[{j}].{key} must be text")
                 milestone = item.get("milestone")
                 if not isinstance(milestone, int) or isinstance(milestone, bool) or milestone < 0:
                     raise ValueError(
@@ -67,7 +67,7 @@ def _character_guide(data: dict[str, Any]) -> dict[str, Any]:
 
 def analyze(data: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(data, dict):
-        raise ValueError("input must be a JSON object")
+        raise TypeError("input must be a JSON object")
     return {"version": 1, "project": PROJECT, **_character_guide(data)}
 
 
