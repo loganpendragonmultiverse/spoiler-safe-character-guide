@@ -38,3 +38,13 @@ python -m build
 The project is feature-complete for its documented v1 scope. Maintenance focuses on correctness, security, compatibility, and well-supported input improvements.
 
 Part of the [Logan Pendragon Forge open-source collection](https://www.loganpendragonforge.com/open-source/). Licensed under the [MIT License](LICENSE).
+
+## Version 1.1.0: reviewed improvements
+
+Validate character facts and introductions, gate aliases by milestone, and add a printable searchable HTML guide with boundary previews.
+
+```bash
+spoiler-character-guide examples/sample.json --format html --output guide.html
+```
+
+Each character may set `introduced_at` (default 0) and `aliases` as objects with name and milestone. Facts require text and a nonnegative integer milestone. Future character names, aliases and facts are omitted from every export; unsupported extra fields are also omitted. The HTML guide searches only visible content and can preview earlier boundaries up to the exported ceiling. It cannot reveal later material because that material is absent from the file. Use browser Print for a clean printable guide. Introduction boundaries and fact accuracy remain author-controlled.
