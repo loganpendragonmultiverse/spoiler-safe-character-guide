@@ -18,6 +18,15 @@ def _character_guide(data: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(through, int) or isinstance(through, bool) or through < 0:
         raise ValueError("through must be a non-negative integer")
     characters = []
+    ids: dict[str, dict[str, Any]] = {}
+    for character in (
+        data.get("characters", []) if isinstance(data.get("characters", []), list) else []
+    ):
+        if isinstance(character, dict) and "id" in character:
+            identifier = character["id"]
+            if not isinstance(identifier, str) or not identifier.strip() or identifier in ids:
+                raise ValueError("character ids must be unique nonempty text")
+            ids[identifier] = character
     raw_characters = data.get("characters", [])
     if not isinstance(raw_characters, list):
         raise TypeError("characters must be an array")
@@ -62,7 +71,38 @@ def _character_guide(data: dict[str, Any]) -> dict[str, Any]:
                     ],
                 }
             )
-    return {"through": through, "characters": characters}
+    result: dict[str, Any] = {"through": through, "characters": characters}
+    if "relationships" in data:
+        relationships = data["relationships"]
+        if not isinstance(relationships, list):
+            raise TypeError("relationships must be an array")
+        visible = []
+        for relation in relationships:
+            if not isinstance(relation, dict):
+                raise TypeError("relationships must contain objects")
+            if any(
+                not isinstance(relation.get(key), str) or not relation[key].strip()
+                for key in ("source", "target", "text")
+            ):
+                raise ValueError("relationships require source, target and text")
+            if relation["source"] not in ids or relation["target"] not in ids:
+                raise ValueError("relationship endpoints must reference character ids")
+            milestone = relation.get("milestone")
+            if not isinstance(milestone, int) or isinstance(milestone, bool) or milestone < 0:
+                raise ValueError("relationship milestone must be a nonnegative integer")
+            left, right = ids[relation["source"]], ids[relation["target"]]
+            revealed = max(milestone, left.get("introduced_at", 0), right.get("introduced_at", 0))
+            if revealed <= through:
+                visible.append(
+                    {
+                        "source": left["name"],
+                        "target": right["name"],
+                        "text": relation["text"],
+                        "milestone": revealed,
+                    }
+                )
+        result["relationships"] = visible
+    return result
 
 
 def analyze(data: dict[str, Any]) -> dict[str, Any]:

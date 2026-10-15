@@ -11,3 +11,7 @@ Validate character facts and introductions, gate aliases by milestone, and add a
 Each character may set `introduced_at` (default 0) and `aliases` as objects with name and milestone. Facts require text and a nonnegative integer milestone. Future character names, aliases and facts are omitted from every export; unsupported extra fields are also omitted. The HTML guide searches only visible content and can preview earlier boundaries up to the exported ceiling. It cannot reveal later material because that material is absent from the file. Use browser Print for a clean printable guide. Introduction boundaries and fact accuracy remain author-controlled.
 
 Local formatting, lint, strict types and regression tests pass. Public release completion requires the protected CI/CodeQL matrix, tagged artifacts and matching Forge catalog/detail deployment.
+
+## 1.2.0 candidate
+
+Optional top-level `relationships` contains objects with `source`, `target`, `text`, and nonnegative integer `milestone`. Endpoints reference unique optional character `id` values. A relationship appears only at or after its own milestone and both introductions (inclusive). Exports contain visible endpoint names, never internal IDs or extra fields; HTML search and earlier-boundary previews use the same filtered relationship data. Authored text remains the author's responsibility. Omit `relationships` to retain the existing report shape.

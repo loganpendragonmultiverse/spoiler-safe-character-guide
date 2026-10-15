@@ -23,6 +23,9 @@ input{font:inherit;padding:9px;box-sizing:border-box;max-width:100%}label{displa
 const boundary=document.getElementById('boundary');boundary.max=data.through;boundary.value=data.through;
 function draw(){const through=Math.min(data.through,Math.max(0,Number(boundary.value)||0));
  const query=document.getElementById('search').value.toLowerCase();const cards=document.getElementById('cards');cards.replaceChildren();let count=0;
+ for(const relation of (data.relationships||[])){if(relation.milestone>through)continue;
+ if(![relation.source,relation.target,relation.text].join(' ').toLowerCase().includes(query))continue;
+ const p=document.createElement('p');p.textContent=relation.source+' — '+relation.target+': '+relation.text;cards.append(p);}
  for(const character of data.characters){if(character.introduced_at>through)continue;
  const facts=character.facts.filter(f=>f.milestone<=through);const aliases=character.aliases.filter(a=>a.milestone<=through);
  if(![character.name,...facts.map(f=>f.text),...aliases.map(a=>a.name)].join(' ').toLowerCase().includes(query))continue;
