@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0 - Unreleased
+
+- Optional top-level `relationships` contains objects with `source`, `target`, `text`, and nonnegative integer `milestone`.
+
 ## 1.1.0 - 2026-09-07
 
 - Validate character facts and introductions, gate aliases by milestone, and add a printable searchable HTML guide with boundary previews.
