@@ -12,6 +12,6 @@ Each character may set `introduced_at` (default 0) and `aliases` as objects with
 
 Local formatting, lint, strict types and regression tests pass. Public release completion requires the protected CI/CodeQL matrix, tagged artifacts and matching Forge catalog/detail deployment.
 
-## 1.2.0 candidate
+## 1.2.0
 
 Optional top-level `relationships` contains objects with `source`, `target`, `text`, and nonnegative integer `milestone`. Endpoints reference unique optional character `id` values. A relationship appears only at or after its own milestone and both introductions (inclusive). Exports contain visible endpoint names, never internal IDs or extra fields; HTML search and earlier-boundary previews use the same filtered relationship data. Authored text remains the author's responsibility. Omit `relationships` to retain the existing report shape.
