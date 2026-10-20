@@ -56,3 +56,26 @@ Optional top-level `relationships` contains objects with `source`, `target`, `te
 ## Version 1.2.1: documentation correction
 
 Version 1.2.0 was released on October 15, 2026. Version 1.2.1 corrects its release labels without changing behavior. The original v1.2.0 tag and downloadable artifacts remain unchanged; use v1.2.1 for the corrected packaged documentation.
+
+## Export an earlier boundary (1.3.0)
+
+Choose a ceiling without editing your source file:
+
+```bash
+spoiler-character-guide examples/sample.json --through 1 --format html --output early-guide.html
+```
+
+`--through` uses the same nonnegative integer milestone rules as the input.
+Future names, aliases, facts and relationships stay absent from every export.
+HTML previews compare milestones exactly even above JavaScript's usual integer
+precision limit. Earlier preview boundaries cannot exceed the export ceiling;
+blank or malformed preview values show boundary zero. Blank fact/alias text is
+rejected. Reports use exclusive file creation.
+
+Installed packages include four project documents and `examples/sample.json`
+under `share/doc/spoiler-safe-character-guide/` in the Python environment. Locate
+its root with `python -c "import sys; print(sys.prefix)"`.
+
+Existing output paths, including dangling symbolic links, are refused before
+exclusive file creation. This protects ordinary output collisions; it does not
+promise protection against hostile concurrent file-system changes.

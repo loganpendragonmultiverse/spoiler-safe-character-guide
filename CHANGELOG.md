@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.0 - 2026-10-20
+
+- Add a CLI export-boundary override without editing source data.
+- Preserve exact HTML milestone boundaries above the JavaScript Number precision limit.
+- Reject blank facts/aliases, create reports exclusively and ship authority docs/example.
+
 ## 1.2.1
 
 - Correct released documentation labels; package behavior is unchanged.

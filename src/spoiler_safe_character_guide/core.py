@@ -49,6 +49,8 @@ def _character_guide(data: dict[str, Any]) -> dict[str, Any]:
                 key = "text" if group == "facts" else "name"
                 if not isinstance(item, dict) or not isinstance(item.get(key), str):
                     raise TypeError(f"characters[{index}].{group}[{j}].{key} must be text")
+                if not item[key].strip():
+                    raise ValueError(f"characters[{index}].{group}[{j}].{key} must not be blank")
                 milestone = item.get("milestone")
                 if not isinstance(milestone, int) or isinstance(milestone, bool) or milestone < 0:
                     raise ValueError(

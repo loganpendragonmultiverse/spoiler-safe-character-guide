@@ -5,7 +5,30 @@ from typing import Any
 
 
 def render_html(report: dict[str, Any]) -> str:
-    payload = json.dumps(report).replace("<", "\\u003c").replace("&", "\\u0026")
+    # Milestones may exceed JavaScript's exact Number range.
+    preview = {
+        **report,
+        "through": str(report["through"]),
+        "characters": [
+            {
+                **character,
+                "introduced_at": str(character["introduced_at"]),
+                "facts": [
+                    {**fact, "milestone": str(fact["milestone"])} for fact in character["facts"]
+                ],
+                "aliases": [
+                    {**alias, "milestone": str(alias["milestone"])}
+                    for alias in character["aliases"]
+                ],
+            }
+            for character in report["characters"]
+        ],
+    }
+    if "relationships" in report:
+        preview["relationships"] = [
+            {**item, "milestone": str(item["milestone"])} for item in report["relationships"]
+        ]
+    payload = json.dumps(preview).replace("<", "\\u003c").replace("&", "\\u0026")
     return (
         """<!doctype html><html lang="en"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>Spoiler-safe character guide</title>
@@ -15,19 +38,21 @@ input{font:inherit;padding:9px;box-sizing:border-box;max-width:100%}label{displa
 @media print{.controls{display:none}article{break-inside:avoid}body{background:white}}</style>
 <h1>Spoiler-safe character guide</h1><p>Only material permitted by the exported boundary is included in this file.</p>
 <div class="controls"><label>Search visible names, aliases and facts <input id="search" type="search"></label>
-<label>Preview earlier boundary <input id="boundary" type="number" min="0"></label></div>
+<label>Preview earlier boundary <input id="boundary" type="text" inputmode="numeric" pattern="[0-9]*"></label></div>
 <p id="status" role="status"></p><main id="cards"></main><script id="data" type="application/json">"""
         + payload
         + """</script>
 <script>const data=JSON.parse(document.getElementById('data').textContent);
-const boundary=document.getElementById('boundary');boundary.max=data.through;boundary.value=data.through;
-function draw(){const through=Math.min(data.through,Math.max(0,Number(boundary.value)||0));
+const boundary=document.getElementById('boundary');boundary.value=data.through;
+const ceiling=BigInt(data.through);
+function draw(){const raw=boundary.value.trim();const requested=/^[0-9]+$/.test(raw)?BigInt(raw):0n;
+ const through=requested>ceiling?ceiling:requested;
  const query=document.getElementById('search').value.toLowerCase();const cards=document.getElementById('cards');cards.replaceChildren();let count=0;
- for(const relation of (data.relationships||[])){if(relation.milestone>through)continue;
+ for(const relation of (data.relationships||[])){if(BigInt(relation.milestone)>through)continue;
  if(![relation.source,relation.target,relation.text].join(' ').toLowerCase().includes(query))continue;
  const p=document.createElement('p');p.textContent=relation.source+' — '+relation.target+': '+relation.text;cards.append(p);}
- for(const character of data.characters){if(character.introduced_at>through)continue;
- const facts=character.facts.filter(f=>f.milestone<=through);const aliases=character.aliases.filter(a=>a.milestone<=through);
+ for(const character of data.characters){if(BigInt(character.introduced_at)>through)continue;
+ const facts=character.facts.filter(f=>BigInt(f.milestone)<=through);const aliases=character.aliases.filter(a=>BigInt(a.milestone)<=through);
  if(![character.name,...facts.map(f=>f.text),...aliases.map(a=>a.name)].join(' ').toLowerCase().includes(query))continue;
  const card=document.createElement('article');const title=document.createElement('h2');title.textContent=character.name;card.append(title);
  const names=document.createElement('p');names.textContent=aliases.length?'Aliases: '+aliases.map(a=>a.name).join(', '):'No aliases revealed';card.append(names);

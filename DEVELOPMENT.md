@@ -15,3 +15,12 @@ Local formatting, lint, strict types and regression tests pass. Public release c
 ## 1.2.0
 
 Optional top-level `relationships` contains objects with `source`, `target`, `text`, and nonnegative integer `milestone`. Endpoints reference unique optional character `id` values. A relationship appears only at or after its own milestone and both introductions (inclusive). Exports contain visible endpoint names, never internal IDs or extra fields; HTML search and earlier-boundary previews use the same filtered relationship data. Authored text remains the author's responsibility. Omit `relationships` to retain the existing report shape.
+
+## Exact boundary and packaging contract
+
+Keep CLI overrides local to the loaded input; never edit source files. Python
+exports must omit all future data before HTML serialization. Encode HTML milestone
+values as decimal strings and compare with BigInt, preserving inclusive equality
+without Number rounding. Recheck searches, relationship endpoint introductions,
+earlier boundary preview and export-ceiling clamps in three browser engines.
+Distributions include four authority documents and the representative example.
